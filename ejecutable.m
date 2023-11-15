@@ -1,11 +1,11 @@
 function ejecutable()
 
     %  función a integrar
-    f = @(x) log(x);
+    f = @(x) log(asin(x))/log(x);
 
     % Definir los límites de integración
-    a = 2;
-    b = 5;
+    a = 0.1;
+    b = 0.9;
 
     % Parámetros solicitados para las pruebas
     N = 20;
@@ -21,6 +21,11 @@ function ejecutable()
     disp('Aproximación utilizando simpson compuesto:');
     I_simpson = simpson_compuesto(f, a, b, N);
     disp(['Resultado: ' num2str(I_simpson)]);
+
+    % Aproximación numérica utilizando la regla de gauss compuesto
+    disp('Aproximación utilizando gauss compuesta:');
+    I_gauss = gaussiana_compuesta(f, a, b, N);
+    disp(['Resultado: ' num2str(I_gauss)]);
 
 end
 

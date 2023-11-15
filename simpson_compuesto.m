@@ -9,17 +9,15 @@ function I = simpson_compuesto(f, a, b, N)
     % Calcula la aproximación inicial
     I = f(a) + f(b);
 
-    % Suma las contribuciones de los puntos internos con ponderaciones 4 y 2
+    % Suma las contribuciones de los puntos
     for i = 1:N-1
-        x = a + i * h;
+        j = a + i * h;
         if mod(i, 2) == 0
-            I = I + 2 * f(x);
+            I = I + 2 * f(j);
         else
-            I = I + 4 * f(x);
+            I = I + 4 * f(j);
         end
     end
-
-    % Multiplica por el ancho del intervalo y divide por 3
     I = I * h / 3;
 end
 
