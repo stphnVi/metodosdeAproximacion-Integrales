@@ -1,6 +1,7 @@
 function ejecutable()
 
     %  función a integrar
+
     f = @(x) log(asin(x))/log(x);
 
     % Definir los límites de integración
