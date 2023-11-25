@@ -18,7 +18,7 @@
 ##Esta función aproxima el valor de una integral definida de entre @var{a} y
 ##@var{b} utilizando el método de romberg
 ##@var{a}, @var{b} deben ser valores de punto flotante
-##@var{n} debe ser un entero. Entre mayor sea @var{n}, mejor será la aproximación
+##@var{n} debe ser un entero mayor a 1. Entre mayor sea @var{n}, mejor será la aproximación
 ## de la integral.
 ##@var{f} debe ser una funcion simbólica symfun
 ## @var{value} es el resultado de la aproximación de la integral
@@ -29,6 +29,11 @@
 ## Created: 2023-11-24
 
 function value = romberg (a, b, n,f)
+  mustBeInteger(n);
+  mustBeGreaterThanOrEqual(n,2);
+  mustBeNumeric(a)
+  mustBeNumeric(b)
+
   warning('off','all')
   R = ones(2,n-1);
   h = b-a;
