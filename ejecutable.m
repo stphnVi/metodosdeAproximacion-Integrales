@@ -44,7 +44,7 @@ function ejecutable()
 
     % Parámetros solicitados para las pruebas
     N = 20;
-    tol = 1e-6;
+    tol = 10e-6;
     iterMax = 2500;
     M = 10;
 
@@ -62,6 +62,21 @@ function ejecutable()
     disp('Aproximación utilizando gauss compuesta:');
     I_gauss = gaussiana_compuesta(f, a, b, M, N);
     disp(['Resultado: ' num2str(I_gauss)]);
+
+    % Aproximación numérica utilizando la regla del trapecio compuesto iterativo
+    disp('Aproximación utilizando trapecio compuesto iterativo:');
+    I_trapecio_ite = trapecio_compuesto_iterativa(f, a, b, tol, iterMax);
+    disp(['Resultado: ' num2str(I_trapecio_ite)]);
+
+    % Aproximación numérica utilizando la regla de simpson compuesto iterativo
+    disp('Aproximación utilizando simpson compuesto iterativo:');
+    I_simpson_ite = simpson_compuesto_iterativa(f, a, b, tol, iterMax);
+    disp(['Resultado: ' num2str(I_simpson_ite)]);
+
+    % Aproximación numérica utilizando la regla de gauss compuesto iterativo
+    disp('Aproximación utilizando gauss compuesta iterativa:');
+    I_gauss_ite = gaussiana_compuesta_iterativa(f, a, b, M, tol, iterMax);
+    disp(['Resultado: ' num2str(I_gauss_ite)]);
 
 end
 

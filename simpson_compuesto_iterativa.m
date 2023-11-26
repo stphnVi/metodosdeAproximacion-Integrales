@@ -1,7 +1,7 @@
-function I = trapecio_compuesto_iterativa(f, a, b, tol, iterMax)
-    % TRAPECIO_COMPUETO_ITERATIVA - Aproxima la integral definida de una función
+function I = simpson_compuesto_iterativa(f, a, b, tol, iterMax)
+    % SIMPSON_COMPUETO - Aproxima la integral definida de una función utilizando la regla de Simpson Compuesto
     %
-    %   I = trapecio_compuesto_iterativa(f, a, b, tol, iterMax)
+    %   I = simpson_compuesto(f, a, b, tol, iterMax)
     %
     % Parámetros de entrada:
     %   - f: Función a integrar. Debe ser una función manejable por Octave.
@@ -12,27 +12,34 @@ function I = trapecio_compuesto_iterativa(f, a, b, tol, iterMax)
     % Parámetro de salida:
     %   - I: Aproximación numérica de la integral definida de f(x) en [a, b].
     %
-
+    % Ejemplo de uso:
+    %   f = @(x) x^2;
+    %   a = 0;
+    %   b = 1;
+    %   tol = 1e-6;
+    %   iterMax = 1000;
+    %   resultado = simpson_compuesto(f, a, b, tol, iterMax);
+    %   disp(['Aproximación numérica de la integral: ', num2str(resultado)]);
+    %
 
     % Inicialización
     n = 1; % Inicializa el número de subintervalos
     h = (b - a) / n; % Calcula la longitud del subintervalo
     I_prev = 0; % Inicializa la aproximación previa de la integral
-    I = h / 2 * (f(a) + f(b)); % Calcula la primera aproximación numérica
+    I = h / 3 * (f(a) + 4 * f((a + b) / 2) + f(b)); % Calcula la primera aproximación numérica usando la fórmula de Simpson
 
     % Iteraciones
     while abs(I - I_prev) > tol && n < iterMax
         n = n * 2; % Doble el número de subintervalos en cada iteración
         h = (b - a) / n; % Recalcula la longitud del subintervalo
         I_prev = I; % Almacena la aproximación previa
-        I = I_prev / 2; % Inicializa la nueva aproximación
+        I = h / 3 * (f(a) + f(b)); % Inicializa la nueva aproximación usando los extremos
 
         % Calcula la suma de las evaluaciones de la función en los puntos interiores
         for i = 1:n-1
-            I = I + h * f(a + i * h);
+            x = a + i * h;
+            I = I + h / 3 * (4 * f(x) + 2 * f(x + h));
         end
-
-        I = I + h * f(b); % Agrega la evaluación de la función en el extremo superior
     end
 end
 
