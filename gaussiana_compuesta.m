@@ -1,72 +1,66 @@
-    % f: función a integrar
-    % a, b: límites del intervalo propuestos con la tarea
-    % N: número de puntos en los que se divide el intervalo
-    % M: orden de la cuadratura, maximo 10
 
 function I = gaussiana_compuesta(f, a, b, M, N)
-    [sol, pN] = polLegendre(M);
-    x = ceros(pN);
-    w = pesos(sol, pN);
-    I = calcular_integral(f, a, b, N, x, w, M);
-end
-
-function I = calcular_integral(f, a, b, N, x, w, M)
-    raices_decimal = double(x);
-    pesos_decimal = double(w);
-
-    % Convertir matrices en listas separadas
-    raices_lista = raices_decimal(:).'; % Convertir matriz en lista
-    pesos_lista = pesos_decimal(:).'; % Convertir matriz en lista
-
+    % gaussiana_compuesta - Aproxima la integral definida de una función utilizando la cuadratura gaussiana compuesta
+    % Importante: se tomó la desición de obtener las constantes de los pesos y las raices para
+    % optimizar la función y evitar realizar cálculos que afectaran a lo largo el flujo del programa para ello
+    % se hizo uso del polinomio de Legendre.
+    %
+    %   I = gaussiana_compuesta(f, a, b, M, N)
+    %
+    % Parámetros de entrada:
+    %   - f: Función a integrar. Debe ser una función manejable por Octave.
+    %   - a, b: Extremos del intervalo [a, b] en el que se realiza la integración.
+    %   - N: número de puntos en los que se divide el intervalo
+    %   - M: orden de la cuadratura, maximo 10
+    %
+    % Parámetro de salida:
+    %   - I: Aproximación numérica de la integral definida de f(x) en [a, b].
+    %
+    % Ejemplo de uso:
+    %   - f = @(x) log(asin(x))/log(x);
+    %   - a = 0.1;
+    %   - b = 0.9;
+    %   - N = 20;
+    %   - M = 10;
+    %   I = gaussiana_compuesta(f, a, b, M, N);
+    %
+    %
+    % Inicialización de la integral
     I = 0;
-    h = (b - a) / N;
 
+    % Nodos y Pesos de la Cuadratura Gaussiana hasta orden 10
+
+    gauss_data = [
+        -0.9739065285171717, 0.0666713443086881;
+        -0.8650633666889845, 0.1494513491505806;
+        -0.6794095682990244, 0.2190863625159820;
+        -0.4333953941292472, 0.2692667193099963;
+        -0.1488743389816312, 0.2955242247147529;
+         0.1488743389816312, 0.2955242247147529;
+         0.4333953941292472, 0.2692667193099963;
+         0.6794095682990244, 0.2190863625159820;
+         0.8650633666889845, 0.1494513491505806;
+         0.9739065285171717, 0.0666713443086881
+    ];
+
+    % Verificar si el orden M es válido
+    if M < 1 || M > 10
+        error('El orden de la cuadratura gaussiana maxima es 10.');
+    end
+
+    % Iteraciones sobre los subintervalos
     for i = 1:N
-        sub_a = a + (i - 1) * h;
-        sub_b = a + i * h;
+        aNew = a + (i - 1) * (b - a) / N;
+        bNew = a + i * (b - a) / N;
 
+        % Aproximación de la integral en el subintervalo usando la cuadratura Gaussiana
         for j = 1:M
-            x = 0.5 * (sub_b - sub_a) * raices_lista(j) + 0.5 * (sub_a + sub_b);
-            I = I + 0.5 * (sub_b - sub_a) * pesos_lista(j) * f(x);
+            x = 0.5 * (bNew - aNew) * gauss_data(j, 1) + 0.5 * (aNew + bNew);
+            I = I + 0.5 * (bNew - aNew) * gauss_data(j, 2) * f(x);
         end
     end
-
-    I = h * I;
 end
 
-function [sol, pN] = polLegendre(M)
-    syms pN;
-    syms x;
-    f_sym = ((x^2-1)^M);
-    f_symB = f_sym;
-
-    for j = 1:M
-        f_symB = diff(f_symB, x);
-    end
-
-    pN = simplify(f_symB / (factorial(M) * 2^M));
-    sol = ceros(pN); % Calcula las raíces usando la función ceros
-
-end
-
-function x = ceros(pN)
-    syms x;
-    eqn = pN == 0;
-    sol = solve(eqn, x);
-    x = sol; % Convierte a valores numéricos si es necesario
-end
-
-function w = pesos(sol, pN)
-    syms x;
-    pNder = diff(pN, x); % Calcula la derivada de pN respecto a x
-
-    w = sym(zeros(size(sol))); % Inicializa un vector/matriz para los pesos
-
-    for i = 1:numel(sol)
-        pNder_sol = subs(pNder, x, sol(i)); % Evalúa la derivada en el punto sol(i)
-        w(i) = 2 / ((1 - sol(i))^2 * pNder_sol);
-    end
-end
 
 
 
